@@ -165,6 +165,7 @@ export default function(internals) {
 
 
   function patch_textContent(destination, baseDescriptor) {
+    try {
     Object.defineProperty(destination, 'textContent', {
       enumerable: baseDescriptor.enumerable,
       configurable: true,
@@ -202,6 +203,7 @@ export default function(internals) {
         }
       },
     });
+    } catch (e) {}
   }
 
   if (Native.Node_textContent && Native.Node_textContent.get) {

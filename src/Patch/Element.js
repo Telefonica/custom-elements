@@ -26,6 +26,7 @@ export default function(internals) {
 
 
   function patch_innerHTML(destination, baseDescriptor) {
+    try {
     Object.defineProperty(destination, 'innerHTML', {
       enumerable: baseDescriptor.enumerable,
       configurable: true,
@@ -70,6 +71,7 @@ export default function(internals) {
         return htmlString;
       },
     });
+    } catch (e) {}
   }
 
   if (Native.Element_innerHTML && Native.Element_innerHTML.get) {
