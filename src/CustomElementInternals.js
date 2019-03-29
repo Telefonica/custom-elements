@@ -77,7 +77,7 @@ export default class CustomElementInternals {
     if (node.__CE_patched) return;
     node.__CE_patched = true;
 
-    for (let i = 0; i < this._patches.length; i++) {
+    for (let i = 0, len = this._patches.length; i < len; i++) {
       this._patches[i](node);
     }
   }
@@ -90,7 +90,7 @@ export default class CustomElementInternals {
 
     Utilities.walkDeepDescendantElements(root, element => elements.push(element));
 
-    for (let i = 0; i < elements.length; i++) {
+    for (let i = 0, len = elements.length; i < len; i++) {
       const element = elements[i];
       if (element.__CE_state === CEState.custom) {
         this.connectedCallback(element);
@@ -108,7 +108,7 @@ export default class CustomElementInternals {
 
     Utilities.walkDeepDescendantElements(root, element => elements.push(element));
 
-    for (let i = 0; i < elements.length; i++) {
+    for (let i = 0, len = elements.length; i < len; i++) {
       const element = elements[i];
       if (element.__CE_state === CEState.custom) {
         this.disconnectedCallback(element);
@@ -232,12 +232,12 @@ export default class CustomElementInternals {
     Utilities.walkDeepDescendantElements(root, gatherElements, visitedImports);
 
     if (this._hasPatches) {
-      for (let i = 0; i < elements.length; i++) {
+      for (let i = 0, len = elements.length; i < len; i++) {
         this.patch(elements[i]);
       }
     }
 
-    for (let i = 0; i < elements.length; i++) {
+    for (let i = 0, len = elements.length; i < len; i++) {
       upgrade(elements[i]);
     }
   }
@@ -287,17 +287,6 @@ export default class CustomElementInternals {
 
     element.__CE_state = CEState.custom;
     element.__CE_definition = definition;
-
-    if (definition.attributeChangedCallback) {
-      const observedAttributes = definition.observedAttributes;
-      for (let i = 0; i < observedAttributes.length; i++) {
-        const name = observedAttributes[i];
-        const value = element.getAttribute(name);
-        if (value !== null) {
-          this.attributeChangedCallback(element, name, null, value, null);
-        }
-      }
-    }
 
     if (Utilities.isConnected(element)) {
       this.connectedCallback(element);
