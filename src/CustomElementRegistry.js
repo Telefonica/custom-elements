@@ -58,7 +58,6 @@ export default class CustomElementRegistry {
      * @type {!Array<!CustomElementDefinition>}
      */
     this._pendingDefinitions = [];
-    this._pendingDefinitionsCount = 0;
 
     /**
      * @private
@@ -132,7 +131,7 @@ export default class CustomElementRegistry {
     };
 
     this._internals.setDefinition(localName, definition);
-    this._pendingDefinitions[this._pendingDefinitionsCount++] = definition;
+    this._pendingDefinitions.push(definition);
 
     // If we've already called the flush callback and it hasn't called back yet,
     // don't call it again.
