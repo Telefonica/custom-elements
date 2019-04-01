@@ -64,9 +64,9 @@ export default class DocumentConstructionObserver {
       this.disconnect();
     }
 
-    for (let i = 0; i < mutations.length; i++) {
+    for (let i = 0, mLen = mutations.length; i < mLen; i++) {
       const addedNodes = mutations[i].addedNodes;
-      for (let j = 0; j < addedNodes.length; j++) {
+      for (let j = 0, aLen = addedNodes.length; j < aLen; j++) {
         const node = addedNodes[j];
         this._internals.patchAndUpgradeTree(node);
       }

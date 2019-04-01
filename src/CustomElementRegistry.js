@@ -58,6 +58,7 @@ export default class CustomElementRegistry {
      * @type {!Array<!CustomElementDefinition>}
      */
     this._pendingDefinitions = [];
+    this._pendingDefinitionsCount = 0;
 
     /**
      * @private
@@ -131,7 +132,7 @@ export default class CustomElementRegistry {
     };
 
     this._internals.setDefinition(localName, definition);
-    this._pendingDefinitions.push(definition);
+    this._pendingDefinitions[this._pendingDefinitionsCount++] = definition;
 
     // If we've already called the flush callback and it hasn't called back yet,
     // don't call it again.
@@ -160,6 +161,7 @@ export default class CustomElementRegistry {
      * @type {!Array<!HTMLElement>}
      */
     const elementsWithStableDefinitions = [];
+    let elementsWithStableDefinitionsCount = 0;
 
     /**
      * A map from `localName`s of definitions that were defined *after* the last
@@ -167,7 +169,7 @@ export default class CustomElementRegistry {
      * @type {!Map<string, !Array<!HTMLElement>>}
      */
     const elementsWithPendingDefinitions = new Map();
-    for (let i = 0; i < pendingDefinitions.length; i++) {
+    for (let i = 0, len = pendingDefinitions.length; i < len; i++) {
       elementsWithPendingDefinitions.set(pendingDefinitions[i].localName, []);
     }
 
@@ -186,13 +188,13 @@ export default class CustomElementRegistry {
         // If there is *any other* applicable definition for the element, add it
         // to the list of elements with stable definitions that need to be upgraded.
         } else if (this._internals.localNameToDefinition(localName)) {
-          elementsWithStableDefinitions.push(element);
+          elementsWithStableDefinitions[elementsWithStableDefinitionsCount++] = element;
         }
       },
     });
 
     // Upgrade elements with 'stable' definitions first.
-    for (let i = 0; i < elementsWithStableDefinitions.length; i++) {
+    for (let i = 0, len = elementsWithStableDefinitions.length; i < len; i++) {
       this._internals.upgradeElement(elementsWithStableDefinitions[i]);
     }
 
@@ -203,7 +205,7 @@ export default class CustomElementRegistry {
 
       // Attempt to upgrade all applicable elements.
       const pendingUpgradableElements = elementsWithPendingDefinitions.get(definition.localName);
-      for (let i = 0; i < pendingUpgradableElements.length; i++) {
+      for (let i = 0, len = pendingUpgradableElements.length; i < len; i++) {
         this._internals.upgradeElement(pendingUpgradableElements[i]);
       }
 
