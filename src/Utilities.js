@@ -19,13 +19,15 @@ const reservedTagList = new Set([
   'missing-glyph',
 ]);
 
+const regExpValidName = /^[a-z][.0-9_a-z]*-[\-.0-9_a-z]*$/;
+
 /**
  * @param {string} localName
  * @returns {boolean}
  */
 export function isValidCustomElementName(localName) {
   const reserved = reservedTagList.has(localName);
-  const validForm = /^[a-z][.0-9_a-z]*-[\-.0-9_a-z]*$/.test(localName);
+  const validForm = regExpValidName.test(localName);
   return !reserved && validForm;
 }
 
