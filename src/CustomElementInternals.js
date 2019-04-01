@@ -20,7 +20,7 @@ export default class CustomElementInternals {
     this._constructorToDefinition = new Map();
 
     /** @type {!Array<!function(!Node)>} */
-    this._patches = []
+    this._patches = [];
     this._patchesCount = 0;
 
     /** @type {boolean} */
