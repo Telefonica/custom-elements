@@ -292,17 +292,6 @@ export default class CustomElementInternals {
     element.__CE_state = CEState.custom;
     element.__CE_definition = definition;
 
-    if (definition.attributeChangedCallback) {
-      const observedAttributes = definition.observedAttributes;
-      for (let i = 0, len = observedAttributes.length; i < len; i++) {
-        const name = observedAttributes[i];
-        const value = element.getAttribute(name);
-        if (value !== null) {
-          this.attributeChangedCallback(element, name, null, value, null);
-        }
-      }
-    }
-
     if (Utilities.isConnected(element)) {
       this.connectedCallback(element);
     }
