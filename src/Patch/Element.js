@@ -49,13 +49,13 @@ export default function(internals) {
         // their children removed as part of the set - the entire subtree is
         // 'disassembled'. This work around walks the subtree *before* using the
         // native setter.
-        /** @type {!Array<!Element>|undefined} */
-        let removedElements = undefined;
+        let removedElements = undefined,
+          removedElementsCount = 0;
         if (isConnected) {
           removedElements = [];
           Utilities.walkDeepDescendantElements(this, element => {
             if (element !== this) {
-              removedElements.push(element);
+              removedElements[removedElementsCount++] = element;
             }
           });
         }
@@ -63,7 +63,7 @@ export default function(internals) {
         baseDescriptor.set.call(this, htmlString);
 
         if (removedElements) {
-          for (let i = 0; i < removedElements.length; i++) {
+          for (let i = 0; i < removedElementsCount; i++) {
             const element = removedElements[i];
             if (element.__CE_state === CEState.custom) {
               internals.disconnectedCallback(element);
@@ -174,10 +174,11 @@ export default function(internals) {
      */
     function upgradeNodesInRange(start, end) {
       const nodes = [];
+      let nodesCount = 0;
       for (let node = start; node !== end; node = node.nextSibling) {
-        nodes.push(node);
+        nodes[nodesCount++] = node;
       }
-      for (let i = 0; i < nodes.length; i++) {
+      for (let i = 0; i < nodesCount; i++) {
         internals.patchAndUpgradeTree(nodes[i]);
       }
     }

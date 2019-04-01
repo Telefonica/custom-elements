@@ -35,7 +35,7 @@ export default function(internals) {
         // need to be called on a DocumentFragment's children after inserting it.
 
         if (Utilities.isConnected(this)) {
-          for (let i = 0; i < insertedNodes.length; i++) {
+          for (let i = 0, len = insertedNodes.length; i < len; i++) {
             internals.connectTree(insertedNodes[i]);
           }
         }
@@ -72,7 +72,7 @@ export default function(internals) {
         // need to be called on a DocumentFragment's children after inserting it.
 
         if (Utilities.isConnected(this)) {
-          for (let i = 0; i < insertedNodes.length; i++) {
+          for (let i = 0, len = insertedNodes.length; i < len; i++) {
             internals.connectTree(insertedNodes[i]);
           }
         }
@@ -146,7 +146,7 @@ export default function(internals) {
 
         if (Utilities.isConnected(this)) {
           internals.disconnectTree(nodeToRemove);
-          for (let i = 0; i < insertedNodes.length; i++) {
+          for (let i = 0, len = insertedNodes.length; i < len; i++) {
             internals.connectTree(insertedNodes[i]);
           }
         }
@@ -172,5 +172,4 @@ export default function(internals) {
 
       return nativeResult;
     });
-
 };

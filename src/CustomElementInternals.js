@@ -21,6 +21,7 @@ export default class CustomElementInternals {
 
     /** @type {!Array<!function(!Node)>} */
     this._patches = [];
+    this._patchesCount = 0;
 
     /** @type {boolean} */
     this._hasPatches = false;
@@ -56,7 +57,7 @@ export default class CustomElementInternals {
    */
   addPatch(listener) {
     this._hasPatches = true;
-    this._patches.push(listener);
+    this._patches[this._patchesCount++] = listener;
   }
 
   /**
@@ -87,10 +88,11 @@ export default class CustomElementInternals {
    */
   connectTree(root) {
     const elements = [];
+    let elementsCount = 0;
 
-    Utilities.walkDeepDescendantElements(root, element => elements.push(element));
+    Utilities.walkDeepDescendantElements(root, element => elements[elementsCount++] = element);
 
-    for (let i = 0, len = elements.length; i < len; i++) {
+    for (let i = 0; i < elementsCount; i++) {
       const element = elements[i];
       if (element.__CE_state === CEState.custom) {
         this.connectedCallback(element);
@@ -105,10 +107,11 @@ export default class CustomElementInternals {
    */
   disconnectTree(root) {
     const elements = [];
+    let elementsCount = 0;
 
-    Utilities.walkDeepDescendantElements(root, element => elements.push(element));
+    Utilities.walkDeepDescendantElements(root, element => elements[elementsCount++] = element);
 
-    for (let i = 0, len = elements.length; i < len; i++) {
+    for (let i = 0; i < elementsCount; i++) {
       const element = elements[i];
       if (element.__CE_state === CEState.custom) {
         this.disconnectedCallback(element);
@@ -187,6 +190,7 @@ export default class CustomElementInternals {
     const upgrade = options.upgrade || (element => this.upgradeElement(element));
 
     const elements = [];
+    let elementsCount = 0;
 
     const gatherElements = element => {
       if (element.localName === 'link' && element.getAttribute('rel') === 'import') {
@@ -223,7 +227,7 @@ export default class CustomElementInternals {
           });
         }
       } else {
-        elements.push(element);
+        elements[elementsCount++] = element;
       }
     };
 
