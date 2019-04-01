@@ -35,7 +35,7 @@ export default function(internals) {
         // need to be called on a DocumentFragment's children after inserting it.
 
         if (Utilities.isConnected(this)) {
-          for (let i = 0; i < insertedNodes.length; i++) {
+          for (let i = 0, len = insertedNodes.length; i < len; i++) {
             internals.connectTree(insertedNodes[i]);
           }
         }
@@ -72,7 +72,7 @@ export default function(internals) {
         // need to be called on a DocumentFragment's children after inserting it.
 
         if (Utilities.isConnected(this)) {
-          for (let i = 0; i < insertedNodes.length; i++) {
+          for (let i = 0, len = insertedNodes.length; i < len; i++) {
             internals.connectTree(insertedNodes[i]);
           }
         }
@@ -146,7 +146,7 @@ export default function(internals) {
 
         if (Utilities.isConnected(this)) {
           internals.disconnectTree(nodeToRemove);
-          for (let i = 0; i < insertedNodes.length; i++) {
+          for (let i = 0, len = insertedNodes.length; i < len; i++) {
             internals.connectTree(insertedNodes[i]);
           }
         }
@@ -207,7 +207,7 @@ export default function(internals) {
         baseDescriptor.set.call(this, assignedValue);
 
         if (removedNodes) {
-          for (let i = 0; i < removedNodes.length; i++) {
+          for (let i = 0, len = removedNodes.length; i < len; i++) {
             internals.disconnectTree(removedNodes[i]);
           }
         }
@@ -229,8 +229,8 @@ export default function(internals) {
           /** @type {!Array<string>} */
           const parts = [];
 
-          for (let i = 0; i < this.childNodes.length; i++) {
-            parts.push(this.childNodes[i].textContent);
+          for (let i = 0, len = this.childNodes.length; i < len; i++) {
+            parts[i] = this.childNodes[i].textContent;
           }
 
           return parts.join('');

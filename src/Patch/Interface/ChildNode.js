@@ -38,37 +38,39 @@ export default function(internals, destination, builtIn) {
        * @type {!Array<!Node>}
        */
       const flattenedNodes = [];
+      let flattenedNodesCount = 0;
 
       /**
        * Elements in `nodes` that were connected before this call.
        * @type {!Array<!Node>}
        */
       const connectedElements = [];
+      let connectedElementsCount = 0;
 
-      for (var i = 0; i < nodes.length; i++) {
+      for (var i = 0, len = nodes.length; i < len; i++) {
         const node = nodes[i];
 
         if (node instanceof Element && Utilities.isConnected(node)) {
-          connectedElements.push(node);
+          connectedElements[connectedElementsCount++] = node;
         }
 
         if (node instanceof DocumentFragment) {
           for (let child = node.firstChild; child; child = child.nextSibling) {
-            flattenedNodes.push(child);
+            flattenedNodes[flattenedNodesCount++] = child;
           }
         } else {
-          flattenedNodes.push(node);
+          flattenedNodes[flattenedNodesCount++] = node;
         }
       }
 
       builtInMethod.apply(this, nodes);
 
-      for (let i = 0; i < connectedElements.length; i++) {
+      for (let i = 0, len = connectedElements.length; i < len; i++) {
         internals.disconnectTree(connectedElements[i]);
       }
 
       if (Utilities.isConnected(this)) {
-        for (let i = 0; i < flattenedNodes.length; i++) {
+        for (let i = 0, len = flattenedNodes.length; i < len; i++) {
           const node = flattenedNodes[i];
           if (node instanceof Element) {
             internals.connectTree(node);
@@ -98,26 +100,28 @@ export default function(internals, destination, builtIn) {
          * @type {!Array<!Node|string>}
          */
         const flattenedNodes = [];
+        let flattenedNodesCount = 0;
 
         /**
          * Elements in `nodes` that were connected before this call.
          * @type {!Array<!Node>}
          */
         const connectedElements = [];
+        let connectedElementsCount = 0;
 
-        for (var i = 0; i < nodes.length; i++) {
+        for (var i = 0, len = nodes.length; i < len; i++) {
           const node = nodes[i];
 
           if (node instanceof Element && Utilities.isConnected(node)) {
-            connectedElements.push(node);
+            connectedElements[connectedElementsCount++] = node;
           }
 
           if (node instanceof DocumentFragment) {
             for (let child = node.firstChild; child; child = child.nextSibling) {
-              flattenedNodes.push(child);
+              flattenedNodes[flattenedNodesCount++] = child;
             }
           } else {
-            flattenedNodes.push(node);
+            flattenedNodes[flattenedNodesCount++] = node;
           }
         }
 
@@ -125,13 +129,13 @@ export default function(internals, destination, builtIn) {
 
         builtIn.replaceWith.apply(this, nodes);
 
-        for (let i = 0; i < connectedElements.length; i++) {
+        for (let i = 0, len = connectedElements.length; i < len; i++) {
           internals.disconnectTree(connectedElements[i]);
         }
 
         if (wasConnected) {
           internals.disconnectTree(this);
-          for (let i = 0; i < flattenedNodes.length; i++) {
+          for (let i = 0, len = flattenedNodes.length; i < len; i++) {
             const node = flattenedNodes[i];
             if (node instanceof Element) {
               internals.connectTree(node);

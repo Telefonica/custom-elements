@@ -20,7 +20,8 @@ export default class CustomElementInternals {
     this._constructorToDefinition = new Map();
 
     /** @type {!Array<!function(!Node)>} */
-    this._patches = [];
+    this._patches = []
+    this._patchesCount = 0;
 
     /** @type {boolean} */
     this._hasPatches = false;
@@ -56,7 +57,7 @@ export default class CustomElementInternals {
    */
   addPatch(listener) {
     this._hasPatches = true;
-    this._patches.push(listener);
+    this._patches[this._patchesCount++] = listener;
   }
 
   /**
@@ -77,7 +78,7 @@ export default class CustomElementInternals {
     if (node.__CE_patched) return;
     node.__CE_patched = true;
 
-    for (let i = 0; i < this._patches.length; i++) {
+    for (let i = 0, len = this._patches.length; i < len; i++) {
       this._patches[i](node);
     }
   }
@@ -87,10 +88,11 @@ export default class CustomElementInternals {
    */
   connectTree(root) {
     const elements = [];
+    let elementsCount = 0;
 
-    Utilities.walkDeepDescendantElements(root, element => elements.push(element));
+    Utilities.walkDeepDescendantElements(root, element => elements[elementsCount++] = element);
 
-    for (let i = 0; i < elements.length; i++) {
+    for (let i = 0; i < elementsCount; i++) {
       const element = elements[i];
       if (element.__CE_state === CEState.custom) {
         this.connectedCallback(element);
@@ -105,10 +107,11 @@ export default class CustomElementInternals {
    */
   disconnectTree(root) {
     const elements = [];
+    let elementsCount = 0;
 
-    Utilities.walkDeepDescendantElements(root, element => elements.push(element));
+    Utilities.walkDeepDescendantElements(root, element => elements[elementsCount++] = element);
 
-    for (let i = 0; i < elements.length; i++) {
+    for (let i = 0; i < elementsCount; i++) {
       const element = elements[i];
       if (element.__CE_state === CEState.custom) {
         this.disconnectedCallback(element);
@@ -187,6 +190,7 @@ export default class CustomElementInternals {
     const upgrade = options.upgrade || (element => this.upgradeElement(element));
 
     const elements = [];
+    let elementsCount = 0;
 
     const gatherElements = element => {
       if (element.localName === 'link' && element.getAttribute('rel') === 'import') {
@@ -223,7 +227,7 @@ export default class CustomElementInternals {
           });
         }
       } else {
-        elements.push(element);
+        elements[elementsCount++] = element;
       }
     };
 
@@ -232,12 +236,12 @@ export default class CustomElementInternals {
     Utilities.walkDeepDescendantElements(root, gatherElements, visitedImports);
 
     if (this._hasPatches) {
-      for (let i = 0; i < elements.length; i++) {
+      for (let i = 0, len = elements.length; i < len; i++) {
         this.patch(elements[i]);
       }
     }
 
-    for (let i = 0; i < elements.length; i++) {
+    for (let i = 0, len = elements.length; i < len; i++) {
       upgrade(elements[i]);
     }
   }
@@ -290,7 +294,7 @@ export default class CustomElementInternals {
 
     if (definition.attributeChangedCallback) {
       const observedAttributes = definition.observedAttributes;
-      for (let i = 0; i < observedAttributes.length; i++) {
+      for (let i = 0, len = observedAttributes.length; i < len; i++) {
         const name = observedAttributes[i];
         const value = element.getAttribute(name);
         if (value !== null) {
